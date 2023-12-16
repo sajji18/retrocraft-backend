@@ -8,20 +8,23 @@ dotenv.config({ path: envPath });
 const secretKey = process.env.JWT_SECRET_KEY;
 
 const jwtAuthentication = (req, res, next) => {
-    const token = req.header('Authorization').split(' ')[1];
-    if (!token) {
-        res.json({ message: "Unauthorized" });
+    const authorizationHeader = req.header('Authorization');
+    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Unauthorized' });
     }
-    else{
+    const token = authorizationHeader.split(' ')[1];
+    try{
         jwt.verify(token, secretKey, (err, user) => {
             if (err) {
-                throw err;
-            }
-            else{
+                return res.status(401).json({ message: 'Unauthorized' });
+            } else {
                 req.user = user;
                 next();
             }
-        })
+        });
+    }
+    catch{
+        res.status(500).json({ message: "Internal Server Error" })
     }
 }
 
