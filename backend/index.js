@@ -11,10 +11,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ROUTES
-const authRoutes = require('./src/routes/authRoute')
+const freelancerRoutes = require('./src/routes/freelancerRoute')
+const producerRoutes = require('./src/routes/producerRoute');
 
-app.use('/', authRoutes);
-
+app.use('/freelancer', freelancerRoutes);
+app.use('/producer', producerRoutes);
 
 // Start the server
 app.listen(PORT, () => {
