@@ -9,7 +9,7 @@ const producerSchema = new mongoose.Schema({
     companyName: { type: String },
     industry: { type: String },
     about: { type: String },
-    jobsCreated: [{ type: mongoose.Schema.Types.ObjectId, ref: 'JobPost' }],
+    jobsCreated: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
     connections: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }

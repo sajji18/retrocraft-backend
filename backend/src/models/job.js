@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const jobPostSchema = new mongoose.Schema({
+const jobSchema = new mongoose.Schema({
     producer: { type: mongoose.Schema.Types.ObjectId, ref: 'Producer', required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -13,8 +13,8 @@ const jobPostSchema = new mongoose.Schema({
     applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
-const JobPost = mongoose.model('JobPost', jobPostSchema);
+const Job = mongoose.model('Job', jobSchema);
 
 module.exports = {
-    JobPost
+    Job
 }

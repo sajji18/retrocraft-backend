@@ -38,7 +38,7 @@ const freelancerSchema = new mongoose.Schema({
             status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }
         }
     ],
-    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'JobPost' }],
+    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
 });
 
 const Freelancer = mongoose.model('Freelancer', freelancerSchema);

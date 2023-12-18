@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const envPath = path.resolve(__dirname, '../../.env');
 dotenv.config({ path: envPath });
 
-const secretKey = process.env.JWT_SECRET_KEY;
+const secretKey = process.env.JWT_SECRET;
 
 const jwtAuthentication = (req, res, next) => {
     const authorizationHeader = req.header('Authorization');
@@ -19,6 +19,7 @@ const jwtAuthentication = (req, res, next) => {
                 return res.status(401).json({ message: 'Unauthorized' });
             } else {
                 req.user = user;
+                console.log(user)
                 next();
             }
         });
