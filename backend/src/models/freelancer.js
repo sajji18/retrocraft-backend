@@ -28,12 +28,12 @@ const freelancerSchema = new mongoose.Schema({
         },
     ],
     connections: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
         { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }
     ],
     connectionRequests: [
         {
-            user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            freelancer: { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
             producer: { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' },
             status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }
         }

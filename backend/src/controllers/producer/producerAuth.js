@@ -40,7 +40,7 @@ const producerLogin = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, producer.password);
     if (isPasswordValid) {
         const token = jwt.sign({ username, role: producer.role }, secretKey, { expiresIn: '1h' });
-        return res.json({ message: 'Authenticated Producer', token });
+        return res.json({ role: producer.role, token });
     } 
     else {
         return res.json({ message: "Incorrect Credentials" });

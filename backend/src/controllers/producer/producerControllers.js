@@ -4,6 +4,8 @@ const { Producer } = require('../../models/producer');
 // SIMPLE CRUD BABYYYYYYYYYY, TODO - Check these routes on POSTMAN + Do Things related to profile building and updating profile => Both Producer and Freelancer
 // LETS START BY CREATING YOUR PROFILE => This thing, Most probably will be taken care of in the frontend
 
+// ---------------------------- JOB POST CONTROLLERS -----------------------------
+
 const createJobPost = async (req, res) => {
     try {
         if (req.user.role !== 'PRODUCER') {
@@ -16,7 +18,7 @@ const createJobPost = async (req, res) => {
             producer: producer._id,
         });
         await job.save();
-        return res.status(200).json({ message: 'Job created successfully', jobId: job._id });
+        return res.status(200).json({ message: 'Job created successfully', job });
     } 
     catch (error) {
         console.error(error);
@@ -96,20 +98,56 @@ const getDetailedJobPost = async (req, res) => {
     }
 }
 
-// title: { type: String, required: true },
-// description: { type: String, required: true },
-// requirements: [{ type: String }],
-// skillsRequired: [{ type: String }],
-// employmentType: { type: String, enum: ['Full-time', 'Part-time', 'Contract', 'Freelance'] },
-// location: { type: String },
-// salary: { type: Number },
-// postedDate: { type: Date, default: Date.now },
-// applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+// ---------------------------- PROFILE CONTROLLERS -----------------------------
+
+const getProducerProfileInfo = async (req, res) => {
+    try {
+        if (req.user.role !== 'PRODUCER') {
+            return res.status(401).json({ message: 'Only Producers allowed to access' });
+        }
+        const producer = await Producer.findOne({ username: req.user.username });
+        const { password, ...profileInfo } = producer._doc; // important use doc type to get the actual collection fields, otherwise we get some gibberish
+        return res.status(200).json(profileInfo);
+    } 
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+// We can use this route to create profile as well
+const updateProducerProfileInfo = async (req, res) => {
+    try {
+        if (req.user.role !== 'PRODUCER') {
+            return res.status(401).json({ message: 'Only Producers allowed to access' });
+        }
+        const producer = await Producer.findOne({ username: req.user.username });
+        const updateFields = { ...req.body };
+        console.log(producer);
+        console.log(updateFields);
+        const result = await Producer.findOneAndUpdate(
+            { _id: producer._id },
+            { $set: updateFields },
+            { new: true }
+        );
+        console.log(result);
+        res.status(200).json(result);
+    } 
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+// ---------------------------- CONNECTION CONTROLLERS -----------------------------
+
 
 module.exports = {
     createJobPost,
     getAllJobPosts,
     updateJobPost,
     deleteJobPost,
-    getDetailedJobPost
+    getDetailedJobPost,
+    getProducerProfileInfo,
+    updateProducerProfileInfo
 }

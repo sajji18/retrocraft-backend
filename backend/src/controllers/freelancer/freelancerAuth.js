@@ -41,7 +41,7 @@ const freelancerLogin = async (req, res) => {
         if (isPasswordValid) {
             // console.log(secretKey);
             const token = jwt.sign({ username, role: freelancer.role }, secretKey, { expiresIn: '1h' });
-            res.json({ message: 'Authenticated Freelancer', token });
+            res.json({ role: freelancer.role, token });
         }
     }
 }

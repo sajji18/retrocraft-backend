@@ -19,7 +19,7 @@ const jwtAuthentication = (req, res, next) => {
                 return res.status(401).json({ message: 'Unauthorized' });
             } else {
                 req.user = user;
-                console.log(user)
+                // console.log(user)
                 next();
             }
         });

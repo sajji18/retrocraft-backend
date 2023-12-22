@@ -13,7 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 // ROUTES
 const freelancerRoutes = require('./src/routes/freelancerRoute')
 const producerRoutes = require('./src/routes/producerRoute');
+const authRoutes = require('./src/routes/authRoute');
 
+app.use('', authRoutes);
 app.use('/freelancer', freelancerRoutes);
 app.use('/producer', producerRoutes);
 
