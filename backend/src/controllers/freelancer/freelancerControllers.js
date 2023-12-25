@@ -26,6 +26,7 @@ const secretKey = process.env.JWT_SECRET;
 // }
 
 
+
 // Freelancer Profile Controllers
 const getFreelancerProfileInfo = async (req, res) => {
     try {
@@ -83,13 +84,98 @@ const getJobPostsFreelancer = async (req, res) => {
     } 
 }
 
-const applyJobPost = async (req, res) => {
-    
+
+// Job Apply Controllers for Freelancers
+const checkIfApplied = async (req, res) => {
+    try {
+        if (req.user.role !== 'FREELANCER') {
+            return res.status(401).json({ message: 'Only Freelancers can apply' });
+        }
+        const jobId = req.params.jobId;
+        const freelancer = await Freelancer.findOne({ username: req.user.username });
+        const jobToCheckIfApplied = await Job.findOne({ _id: jobId });
+
+        const applied = jobToCheckIfApplied.applicants.includes(freelancer._id);
+        if (applied) {
+            return res.json({ message: "User has already applied for this job", applied: applied });
+        } 
+        return res.json({ message: "User has not applied for this job", applied: applied });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error in checking applicant for the job post" });
+    }
 }
+
+const applyJobPost = async (req, res) => {
+    try {
+        if (req.user.role !== 'FREELANCER') {
+            return res.status(401).json({ message: 'Only Freelancers can apply' });
+        }
+        const jobId = req.params.jobId
+        const freelancer = await Freelancer.findOne({ username: req.user.username });
+        const jobToApply = await Job.findOne({ _id: jobId });
+
+        const alreadyApplied = jobToApply.applicants.includes(freelancer._id);
+        if (alreadyApplied) {
+            return res.json({ message: "User has already applied for this job" });
+        }
+
+        jobToApply.applicants.push(freelancer._id);
+        console.log(jobToApply.applicants);
+        freelancer.appliedJobs.push(jobId);
+        console.log(freelancer.appliedJobs);
+
+        await jobToApply.save();
+        await freelancer.save();
+
+        return res.json({ message: "Successfully applied for the job" })
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error in applying to job post" });
+    }
+}
+
+const unapplyToJobPost = async (req, res) => {
+    try {
+        if (req.user.role !== 'FREELANCER') {
+            return res.status(401).json({ message: 'Only Freelancers can apply' });
+        }
+        const jobId = req.params.jobId
+        const freelancer = await Freelancer.findOne({ username: req.user.username });
+        const jobToUnapply = await Job.findOne({ _id: jobId });
+
+        const freelancerIdString = freelancer._id.toString();
+        jobToUnapply.applicants = jobToUnapply.applicants.filter(
+            applicantId => applicantId.toString() !== freelancerIdString
+        );
+        freelancer.appliedJobs = freelancer.appliedJobs.filter(
+            appliedJobId => appliedJobId.toString() !== jobId
+        );
+
+        console.log(freelancer.appliedJobs);
+        console.log(jobToUnapply.applicants);
+
+        await jobToUnapply.save();
+        await freelancer.save();
+
+        return res.json({ message: "Successfully unapplied for the job" })
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error in unapplying to job post" });
+    }
+}
+
+
+// FREELANCER CONNECTION CONTROLLERS
+
 
 module.exports = {
     // freelancerDetails
     getFreelancerProfileInfo,
     updateFreelancerProfileInfo,
-    getJobPostsFreelancer
+    getJobPostsFreelancer,
+    checkIfApplied,
+    applyJobPost,
+    unapplyToJobPost,
 }

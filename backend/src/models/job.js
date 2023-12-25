@@ -10,7 +10,7 @@ const jobSchema = new mongoose.Schema({
     location: { type: String },
     salary: { type: Number },
     postedDate: { type: Date, default: Date.now },
-    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' }],
 });
 
 const Job = mongoose.model('Job', jobSchema);

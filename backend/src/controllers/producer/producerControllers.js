@@ -18,6 +18,10 @@ const createJobPost = async (req, res) => {
             producer: producer._id,
         });
         await job.save();
+        
+        producer.jobsCreated.push(job._id);
+        await producer.save();
+
         return res.status(200).json({ message: 'Job created successfully', job });
     } 
     catch (error) {
@@ -31,9 +35,6 @@ const createJobPost = async (req, res) => {
 
 const getAllJobPosts = async (req, res) => {
     try {
-        if (req.user.role !== 'PRODUCER') {
-            res.status(401).json({ message: 'Not a Producer' });
-        }
         const producer = await Producer.findOne({ username: req.user.username });
         console.log(producer)
         const jobs = await Job.find({ producer: producer._id });
@@ -57,7 +58,7 @@ const updateJobPost = async (req, res) => {
             { $set: updateFields },
             { new: true }
         );
-        res.status(200).json(result);
+        res.status(200).json({ result , message: 'Job Updated Successfully'});
     }
     catch (error) {
         console.error(error);
@@ -85,12 +86,10 @@ const deleteJobPost = async (req, res) => {
 
 const getDetailedJobPost = async (req, res) => {
     try {
-        if (req.user.role !== 'PRODUCER') {
-            res.status(401).json({ message: 'Not a Producer' });
-        }
         const jobId = req.params.jobId;
         const job = await Job.findOne({ _id: jobId });
-        return res.status(200).json(job);
+        const producer = await Producer.findOne({ _id: job.producer });
+        return res.status(200).json({ job, producer});
     }
     catch (error) {
         console.error(error);
@@ -102,9 +101,9 @@ const getDetailedJobPost = async (req, res) => {
 
 const getProducerProfileInfo = async (req, res) => {
     try {
-        if (req.user.role !== 'PRODUCER') {
-            return res.status(401).json({ message: 'Only Producers allowed to access' });
-        }
+        // if (req.user.role !== 'PRODUCER') {
+        //     return res.status(401).json({ message: 'Only Producers allowed to access' });
+        // }
         const producer = await Producer.findOne({ username: req.user.username });
         const { password, ...profileInfo } = producer._doc; // important use doc type to get the actual collection fields, otherwise we get some gibberish
         return res.status(200).json(profileInfo);
@@ -131,7 +130,7 @@ const updateProducerProfileInfo = async (req, res) => {
             { new: true }
         );
         console.log(result);
-        res.status(200).json(result);
+        res.status(200).json({ result , message: 'Profile Updated Successfully'});
     } 
     catch (error) {
         console.error(error);
