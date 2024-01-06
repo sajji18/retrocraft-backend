@@ -87,7 +87,7 @@ const deleteJobPost = async (req, res) => {
 const getDetailedJobPost = async (req, res) => {
     try {
         const jobId = req.params.jobId;
-        const job = await Job.findOne({ _id: jobId });
+        const job = await Job.findOne({ _id: jobId }).populate('producer');
         const producer = await Producer.findOne({ _id: job.producer });
         return res.status(200).json({ job, producer});
     }

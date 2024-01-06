@@ -30,9 +30,9 @@ const secretKey = process.env.JWT_SECRET;
 // Freelancer Profile Controllers
 const getFreelancerProfileInfo = async (req, res) => {
     try {
-        if (req.user.role !== 'FREELANCER') {
-            return res.status(401).json({ message: 'Only Freelancer allowed to access' });
-        }
+        // if (req.user.role !== 'FREELANCER') {
+        //     return res.status(401).json({ message: 'Only Freelancer allowed to access' });
+        // }
         const freelancer = await Freelancer.findOne({ username: req.user.username });
         const { password, ...profileInfo } = freelancer._doc; // important use ._doc to get the actual collection fields, otherwise we get some gibberish
         return res.status(200).json(profileInfo);
@@ -45,9 +45,9 @@ const getFreelancerProfileInfo = async (req, res) => {
 
 const updateFreelancerProfileInfo = async (req, res) => {
     try {
-        if (req.user.role !== 'FREELANCER') {
-            return res.status(401).json({ message: 'Only Freelancers allowed to access' });
-        }
+        // if (req.user.role !== 'FREELANCER') {
+        //     return res.status(401).json({ message: 'Only Freelancers allowed to access' });
+        // }
         const freelancer = await Freelancer.findOne({ username: req.user.username });
         const updateFields = { ...req.body };
         console.log(freelancer);
@@ -71,11 +71,11 @@ const getJobPostsFreelancer = async (req, res) => {
     try {
         // console.log('hello');
         // console.log(req.user);
-        if (req.user.role !== 'FREELANCER') {
-            return res.status(401).json({ message: 'Only Freelancers allowed to access' });
-        }
+        // if (req.user.role !== 'FREELANCER') {
+        //     return res.status(401).json({ message: 'Only Freelancers allowed to access' });
+        // }
         // console.log('hello');
-        const jobPosts = await Job.find({});
+        const jobPosts = await Job.find({}).populate('producer');
         // console.log(jobPosts)
         res.json(jobPosts);
     }
@@ -166,9 +166,21 @@ const unapplyToJobPost = async (req, res) => {
     }
 }
 
-
-// FREELANCER CONNECTION CONTROLLERS
-
+const getAppliedJobPosts = async (req, res) => {
+    try {
+        if (req.user.role !== 'FREELANCER') {
+            return res.status(401).json({ message: 'Only Freelancers can apply' });
+        }
+        // console.log("hello")
+        const freelancer = await Freelancer.findOne({ username: req.user.username }).populate('appliedJobs');
+        // console.log(freelancer.appliedJobs);
+        res.json(freelancer.appliedJobs);
+    }
+    catch (error) {
+        // console.error(error)
+        res.status(500).json({ message: "Error Getting the job posts" });
+    }
+}
 
 module.exports = {
     // freelancerDetails
@@ -178,4 +190,5 @@ module.exports = {
     checkIfApplied,
     applyJobPost,
     unapplyToJobPost,
+    getAppliedJobPosts,
 }

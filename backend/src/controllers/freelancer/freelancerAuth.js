@@ -25,7 +25,7 @@ const freelancerSignup = async (req, res) => {
                 email,
             });
             await newFreelancer.save();
-            const token = jwt.sign({ freelancerId: newFreelancer.id, username, role: 'FREELANCER' }, secretKey, { expiresIn: '1h' });
+            const token = jwt.sign({ userId: newFreelancer.id, username, role: 'FREELANCER' }, secretKey, { expiresIn: '1h' });
             res.status(201).json({ message: "User Account created successfully", role: 'FREELANCER', token: token });
         }
 }
@@ -40,7 +40,7 @@ const freelancerLogin = async (req, res) => {
         const isPasswordValid = await bcrypt.compare(password, freelancer.password);
         if (isPasswordValid) {
             // console.log(secretKey);
-            const token = jwt.sign({ username, role: freelancer.role }, secretKey, { expiresIn: '1h' });
+            const token = jwt.sign({ userId: freelancer._id, username, role: freelancer.role }, secretKey, { expiresIn: '1h' });
             res.json({ role: freelancer.role, token });
         }
     }

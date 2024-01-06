@@ -12,6 +12,8 @@ router.post('/login', freelancerAuth.freelancerLogin);
 // Job Post Routes
 router.get('/get-job-posts', jwtAuth.jwtAuthentication, freelancerControllers.getJobPostsFreelancer);
 
+router.get('/get-applied-job-posts', jwtAuth.jwtAuthentication, freelancerControllers.getAppliedJobPosts);
+
 router.get('/job/apply/:jobId', jwtAuth.jwtAuthentication, freelancerControllers.checkIfApplied);
 
 router.post('/job/apply/:jobId', jwtAuth.jwtAuthentication, freelancerControllers.applyJobPost);

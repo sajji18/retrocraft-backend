@@ -24,7 +24,7 @@ const producerSignup = async (req, res) => {
         email,
         })
         await newProducer.save();
-        const token = jwt.sign({ producerId: newProducer.id, username, role: 'PRODUCER' }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: newProducer.id, username, role: 'PRODUCER' }, secretKey, { expiresIn: '1h' });
         return res.status(201).json({ message: "Producer Account created successfully", token: token });
     }
 }
@@ -39,7 +39,7 @@ const producerLogin = async (req, res) => {
     console.log("Wait what??")
     const isPasswordValid = await bcrypt.compare(password, producer.password);
     if (isPasswordValid) {
-        const token = jwt.sign({ username, role: producer.role }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: producer.id, username, role: producer.role }, secretKey, { expiresIn: '1h' });
         return res.json({ role: producer.role, token });
     } 
     else {

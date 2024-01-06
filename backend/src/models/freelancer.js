@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ConnectionRequest } = require('./connection');
 
 const freelancerSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -7,7 +8,7 @@ const freelancerSchema = new mongoose.Schema({
     role: { type: String, default: "FREELANCER" },
     firstName: { type: String },
     lastName: { type: String },
-    profileImage: { type: String },
+    profileImage: { type: String, default: "" },
     hasProfile: { type: Boolean, default: false }, 
     bio: { type: String },
     skills: [{ type: String }],
@@ -31,13 +32,8 @@ const freelancerSchema = new mongoose.Schema({
         { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
         { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }
     ],
-    connectionRequests: [
-        {
-            freelancer: { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
-            producer: { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' },
-            status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }
-        }
-    ],
+    connectionRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ConnectionRequest' }],
+    connectionRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ConnectionRequest' }],
     appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
 });
 
