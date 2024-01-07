@@ -9,8 +9,8 @@ router.patch('/accept-connection-request/:connectionRequestId', jwtAuth.jwtAuthe
 
 router.patch('/reject-connection-request/:connectionRequestId', jwtAuth.jwtAuthentication, utils.rejectConnectionRequest);
 
-router.get('/all-outgoing-connection-requests', jwtAuth.jwtAuthentication, utils.allOutgoingConnectionRequests);
+router.get('/all-outgoing-connection-requests', jwtAuth.jwtAuthentication, utils.allSentConnectionRequests);
 
-router.get('/all-incoming-connection-requests', jwtAuth.jwtAuthentication, utils.allIncomingConnectionRequests);
+router.get('/all-incoming-connection-requests', jwtAuth.jwtAuthentication, utils.allReceivedConnectionRequests);
 
 module.exports = router;

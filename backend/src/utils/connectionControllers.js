@@ -28,6 +28,23 @@ const sendConnectionRequest = async (req, res) => {
             status: 'pending'
         });
         await connectionRequest.save();
+
+        const senderModel = req.user.role === 'FREELANCER' ? Freelancer : Producer;
+        const receiverModel = receiverType === 'Freelancer' ? Freelancer : Producer;
+        
+        console.log(senderModel);
+        console.log(receiverModel);
+
+        const sender = await senderModel.findById(req.user.userId);
+        const receiver = await receiverModel.findById(receiverId);
+
+        console.log(sender);
+
+        sender.connectionRequestsSent.push(connectionRequest._id);
+        await sender.save();
+        receiver.connectionRequestsReceived.push(connectionRequest._id);
+        await receiver.save();
+
         res.status(201).json({ message: 'Connection Request Sent Successfully' });
         } 
         catch (error) {
@@ -48,6 +65,10 @@ const acceptConnectionRequest = async (req, res) => {
         if (connectionRequest.receiverId.toString() !== req.user.userId.toString()) {
             return res.status(403).json({ message: 'Unauthorized to accept this request' });
         }
+        if (connectionRequest.status !== 'pending') {
+            return res.status(400).json({ message: 'Connection request cannot be accepted because it is not pending' });
+        }
+
         connectionRequest.status = 'accepted';
         await connectionRequest.save()
 
@@ -57,10 +78,24 @@ const acceptConnectionRequest = async (req, res) => {
         const sender = await senderModel.findById(connectionRequest.senderId);
         const receiver = await receiverModel.findById(connectionRequest.receiverId);
 
-        receiver.connections.push(connectionRequest.senderId);
-        await receiver.save();
+        sender.connectionRequestsSent.pull(connectionRequestId);
+        receiver.connectionRequestsReceived.pull(connectionRequestId);
 
-        sender.connections.push(connectionRequest.receiverId);
+        if (connectionRequest.senderType === 'Freelancer') {
+            receiver.freelancerConnections.push(connectionRequest.senderId);
+        } 
+        else if (connectionRequest.senderType === 'Producer') {
+            receiver.producerConnections.push(connectionRequest.senderId);
+        }
+
+        if (connectionRequest.receiverType === 'Freelancer') {
+            sender.freelancerConnections.push(connectionRequest.receiverId);
+        } 
+        else if (connectionRequest.receiverType === 'Producer') {
+            sender.producerConnections.push(connectionRequest.receiverId);
+        }
+
+        await receiver.save();
         await sender.save();
 
         res.status(200).json({ message: 'Connection request accepted successfully' });
@@ -93,10 +128,11 @@ const rejectConnectionRequest = async (req, res) => {
     
         const sender = await senderModel.findById(connectionRequest.senderId);
         const receiver = await receiverModel.findById(connectionRequest.receiverId);
-        
-        receiver.connections.pull(connectionRequest.senderId);
+
+        sender.connectionRequestsSent.pull(connectionRequestId);
+        receiver.connectionRequestsReceived.pull(connectionRequestId);
+
         await receiver.save();
-        sender.connections.pull(connectionRequest.receiverId);
         await sender.save();
     
         res.status(200).json({ message: 'Connection request rejected successfully' });
@@ -108,35 +144,32 @@ const rejectConnectionRequest = async (req, res) => {
     
 }
 
-const allOutgoingConnectionRequests = async (req, res) => {
-    // All outgoing connection requests pending against other users
+const allSentConnectionRequests = async (req, res) => {
+    // All Sent connection requests pending against other users
     try{
-        const senderType = req.user.role.charAt(0).toUpperCase() + req.user.role.slice(1).toLowerCase()
-        // console.log(req.user);
-        // console.log(senderType);
-        const connectionRequests = await ConnectionRequest.find({ 
-                senderId: req.user.userId, 
-                senderType: senderType, 
-                status: 'pending' 
-            }  
-        );
-        res.status(200).json(connectionRequests);
+        const role = req.user.role;
+        const userModel = role === 'FREELANCER' ? Freelancer : Producer;
+
+        const user = await userModel.findById(req.user.userId);
+        const connectionRequestsSent = user.connectionRequestsSent;
+
+        res.status(200).json(connectionRequestsSent);
     }
     catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
-const allIncomingConnectionRequests = async (req, res) => {
-    // All incoming connection requests pending against the user
+const allReceivedConnectionRequests = async (req, res) => {
+    // All Received connection requests pending against the user
     try{
-        const connectionRequests = await ConnectionRequest.find({ 
-                receiverId: req.user.userId, 
-                receiverType: req.user.role.charAt(0).toUpperCase() + req.user.role.slice(1).toLowerCase(), 
-                status: 'pending' 
-            }  
-        );
-        res.status(200).json(connectionRequests);
+        const role = req.user.role;
+        const userModel = role === 'FREELANCER' ? Freelancer : Producer;
+
+        const user = await userModel.findById(req.user.userId);
+        const connectionRequestsReceived = user.connectionRequestsReceived;
+
+        res.status(200).json(connectionRequestsReceived);
     }
     catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
@@ -155,8 +188,8 @@ module.exports = {
     sendConnectionRequest,
     acceptConnectionRequest,
     rejectConnectionRequest,
-    allOutgoingConnectionRequests,
-    allIncomingConnectionRequests,
+    allSentConnectionRequests,
+    allReceivedConnectionRequests,
     checkConnected,
     removeConnection,
 }

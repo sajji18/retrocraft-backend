@@ -138,7 +138,16 @@ const updateProducerProfileInfo = async (req, res) => {
     }
 }
 
-// ---------------------------- CONNECTION CONTROLLERS -----------------------------
+const getProfileInfoUsingUsername = async (req, res) => {
+    try {
+        const { username } = req.params;
+        const producer = await Producer.findOne({ username });
+        
+    }
+    catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+}
 
 
 module.exports = {

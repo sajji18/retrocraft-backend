@@ -25,4 +25,6 @@ router.get('/profile', jwtAuth.jwtAuthentication, producerControllers.getProduce
 
 router.put('/profile', jwtAuth.jwtAuthentication, producerControllers.updateProducerProfileInfo)
 
+// router.get('/profile/:username', jwtAuth.jwtAuthentication, producerControllers)
+
 module.exports = router;

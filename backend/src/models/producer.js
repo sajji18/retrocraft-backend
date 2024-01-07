@@ -12,10 +12,12 @@ const producerSchema = new mongoose.Schema({
     industry: { type: String, default: '' },
     about: { type: String, default: '' },
     jobsCreated: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
-    connections: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }
-    ],
+    freelancerConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' }],
+    producerConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }],
+    // connections: [
+    //     { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
+    //     { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }
+    // ],
     connectionRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ConnectionRequest' }],
     connectionRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ConnectionRequest' }],
 });

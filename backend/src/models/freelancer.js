@@ -28,10 +28,12 @@ const freelancerSchema = new mongoose.Schema({
         graduationYear: { type: Number },
         },
     ],
-    connections: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }
-    ],
+    freelancerConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' }],
+    producerConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }],
+    // connections: [
+    //     { type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' },
+    //     { type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }
+    // ],
     connectionRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ConnectionRequest' }],
     connectionRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ConnectionRequest' }],
     appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],

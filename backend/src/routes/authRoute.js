@@ -4,6 +4,8 @@ const utils = require('../utils/details')
 
 router.get('/details', utils.details);
 
+router.get('/profile-owner-details/:role/:username', utils.profileOwnerDetails)
+
 // router.post('/signup', authController.signup);
 // // router.post('/login', authController.login);
 // router.post('/freelancer-login', authController.freelancerLogin);
