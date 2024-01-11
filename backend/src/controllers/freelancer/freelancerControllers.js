@@ -58,7 +58,7 @@ const updateFreelancerProfileInfo = async (req, res) => {
             { new: true }
         );
         console.log(result);
-        res.status(200).json(result);
+        res.status(200).json({ updatedProfile: result, message: "Profile Updated Successfully"});
     } 
     catch (error) {
         console.error(error);

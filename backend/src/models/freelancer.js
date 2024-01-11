@@ -25,7 +25,7 @@ const freelancerSchema = new mongoose.Schema({
         {
         degree: { type: String },
         school: { type: String },
-        graduationYear: { type: Number },
+        graduationYear: { type: String },
         },
     ],
     freelancerConnections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' }],

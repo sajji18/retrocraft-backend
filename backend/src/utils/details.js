@@ -47,6 +47,15 @@ const profileOwnerDetails = async (req, res) => {
     }
 }
 
+const channeliLogin = async (req, res) => {
+    try{
+        
+    }
+    catch(error) {
+        console.error(error)
+    }
+}
+
 module.exports = {
     details,
     profileOwnerDetails

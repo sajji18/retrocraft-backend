@@ -130,7 +130,7 @@ const updateProducerProfileInfo = async (req, res) => {
             { new: true }
         );
         console.log(result);
-        res.status(200).json({ result , message: 'Profile Updated Successfully'});
+        res.status(200).json({ updatedProfile: result , message: 'Profile Updated Successfully'});
     } 
     catch (error) {
         console.error(error);
@@ -138,16 +138,16 @@ const updateProducerProfileInfo = async (req, res) => {
     }
 }
 
-const getProfileInfoUsingUsername = async (req, res) => {
-    try {
-        const { username } = req.params;
-        const producer = await Producer.findOne({ username });
+// const getProfileInfoUsingUsername = async (req, res) => {
+//     try {
+//         const { username } = req.params;
+//         const producer = await Producer.findOne({ username });
         
-    }
-    catch (error) {
-        res.status(500).json({ message: "Internal Server Error" })
-    }
-}
+//     }
+//     catch (error) {
+//         res.status(500).json({ message: "Internal Server Error" })
+//     }
+// }
 
 
 module.exports = {
