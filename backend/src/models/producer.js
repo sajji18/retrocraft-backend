@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ConnectionRequest } = require('./connection');
+// const { ConnectionRequest } = require('./connection');
 
 const producerSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },

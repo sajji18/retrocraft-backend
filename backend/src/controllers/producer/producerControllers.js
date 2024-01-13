@@ -37,7 +37,7 @@ const getAllJobPosts = async (req, res) => {
     try {
         const producer = await Producer.findOne({ username: req.user.username });
         console.log(producer)
-        const jobs = await Job.find({ producer: producer._id });
+        const jobs = await Job.find({ producer: producer._id }).populate('applicants');
         return res.status(200).json(jobs);
     }
     catch (error) {
