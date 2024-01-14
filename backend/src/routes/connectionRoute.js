@@ -13,4 +13,6 @@ router.get('/all-outgoing-connection-requests', jwtAuth.jwtAuthentication, utils
 
 router.get('/all-incoming-connection-requests', jwtAuth.jwtAuthentication, utils.allReceivedConnectionRequests);
 
+router.get('/check-connection/:role/:username', jwtAuth.jwtAuthentication, utils.checkConnected);
+
 module.exports = router;

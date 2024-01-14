@@ -36,7 +36,7 @@ const profileOwnerDetails = async (req, res) => {
         const profileOwner = await userModel.findOne({ username })
         // console.log(profileOwner);
         if (userModel === Freelancer) {
-            console.log("Reached if block")
+            // console.log("Reached if block")
             await profileOwner
                 .populate([
                     { path: 'appliedJobs' },
@@ -47,7 +47,7 @@ const profileOwnerDetails = async (req, res) => {
                 ]);
         }
         else if (userModel === Producer) {
-            console.log("Reached else if block")
+            // console.log("Reached else if block")
             await profileOwner
                 .populate([
                     { path: 'jobsCreated' },
@@ -58,7 +58,7 @@ const profileOwnerDetails = async (req, res) => {
                 ]);
         }
 
-        console.log(profileOwner);
+        // console.log(profileOwner);
 
         if (!profileOwner) {
             return res.status(404).json({ message: "User with such username and role does not exist" });

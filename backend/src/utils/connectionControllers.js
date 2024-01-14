@@ -1,6 +1,7 @@
 const { ConnectionRequest } = require('../models/connection');
 const { Freelancer } = require('../models/freelancer');
 const { Producer } = require('../models/producer');
+const mongoose = require('mongoose');
 
 const sendConnectionRequest = async (req, res) => {
     try {
@@ -32,20 +33,20 @@ const sendConnectionRequest = async (req, res) => {
         const senderModel = req.user.role === 'FREELANCER' ? Freelancer : Producer;
         const receiverModel = receiverType === 'Freelancer' ? Freelancer : Producer;
         
-        console.log(senderModel);
-        console.log(receiverModel);
+        // console.log(senderModel);
+        // console.log(receiverModel);
 
         const sender = await senderModel.findById(req.user.userId);
         const receiver = await receiverModel.findById(receiverId);
 
-        console.log(sender);
+        // console.log(sender);
 
         sender.connectionRequestsSent.push(connectionRequest._id);
         await sender.save();
         receiver.connectionRequestsReceived.push(connectionRequest._id);
         await receiver.save();
 
-        res.status(201).json({ message: 'Connection Request Sent Successfully' });
+        res.status(201).json({ message: 'Connection Request Sent Successfully', status: connectionRequest.status });
         } 
         catch (error) {
             console.error('Error sending connection request:', error);
@@ -166,19 +167,80 @@ const allReceivedConnectionRequests = async (req, res) => {
         const role = req.user.role;
         const userModel = role === 'FREELANCER' ? Freelancer : Producer;
 
-        const user = await userModel.findById(req.user.userId);
-        const connectionRequestsReceived = user.connectionRequestsReceived;
-
+        const user = await userModel.findById(req.user.userId).populate('connectionRequestsReceived');
+        const connectionRequestsReceived = await Promise.all(
+            user.connectionRequestsReceived.map(async (connectionRequest) => {
+                const senderModel = mongoose.model(connectionRequest.senderType);
+                const receiverModel = mongoose.model(connectionRequest.receiverType);
+        
+                const [sender, receiver] = await Promise.all([
+                    senderModel.findById(connectionRequest.senderId),
+                    receiverModel.findById(connectionRequest.receiverId),
+                ]);
+        
+                return {
+                    ...connectionRequest.toObject(),
+                    senderId: sender,
+                    receiverId: receiver,
+                };
+            })
+        );
+        console.log(connectionRequestsReceived)
         res.status(200).json(connectionRequestsReceived);
     }
     catch (error) {
+        console.error(error)
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
 const checkConnected = async (req, res) => {
-    
-}
+    try {
+        const loggedInUserId = req.user.userId;
+        const profileOwnerRole = req.params.role.toUpperCase();
+        const profileOwnerUsername = req.params.username;
+
+        const profileOwnerModel = profileOwnerRole === 'FREELANCER' ? Freelancer : Producer;
+        const profileOwner = await profileOwnerModel.findOne({ username: profileOwnerUsername });
+
+        if (!profileOwner) {
+            return res.status(404).json({ message: 'Profile owner not found' });
+        }
+
+        const isConnected = (
+            profileOwner.freelancerConnections.includes(loggedInUserId) ||
+            profileOwner.producerConnections.includes(loggedInUserId)
+        );
+
+        const pendingRequest = await ConnectionRequest.findOne({
+            senderId: loggedInUserId,
+            receiverId: profileOwner._id,
+            status: 'pending'
+        });
+
+        let status = '';
+
+        if (isConnected) {
+            status = 'connected';
+        } 
+        else if (pendingRequest) {
+            status = 'pending';
+        } 
+        else {
+            status = 'not_connected';
+        }
+        res.status(200).json({ status });
+    } 
+    catch (error) {
+        console.error('Error checking connection status:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+module.exports = {
+    checkConnected,
+};
+
 
 const removeConnection = async (req, res) => {
 

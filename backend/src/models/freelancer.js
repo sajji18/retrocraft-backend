@@ -16,8 +16,8 @@ const freelancerSchema = new mongoose.Schema({
         {
         jobTitle: { type: String },
         company: { type: String },
-        startDate: { type: Date },
-        endDate: { type: Date },
+        startDate: { type: String },
+        endDate: { type: String },
         description: { type: String },
         },
     ],
