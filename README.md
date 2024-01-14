@@ -53,6 +53,7 @@ RetrocraftHub is a platform for professional networking and job seeking made wit
         ```bash
             $ npm install
         ```
+    3. Set up .env file according to the .env.example (Enter a Jwt_secret, port on which server will run, Your mongodb-url and node_env = development)
 * #### Run It
     You can start the backend server using the following command on localhost:3000 - 
     ```bash
