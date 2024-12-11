@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const utils = require('../utils/details')
+import { NextFunction, Request, Response, Router } from 'express';
+import utils from '../utils/details';
+
+const router: Router = Router();
 
 router.get('/details', utils.details);
-
 router.get('/profile-owner-details/:role/:username', utils.profileOwnerDetails)
 
 // router.post('/signup', authController.signup);

@@ -7,7 +7,9 @@ RetrocraftHub is a platform for professional networking and job seeking made wit
 * Producer Dashboard: It is the default landing page for a producer. It displays all the Job Posts created by the logged in producer with option to view the detailed view as well as the applicants who have applied for the job, the pending connection requests, and a form to Create New Job posts.
 * Job Post Detail View: This View differs for the Job Owner, a Freelancer and a Producer who is not the Job Owner. The Owner view the Preview/Edit View of this Post, the Freelancers and other Producers view the notice like display, in addition the freelancers have an apply button to apply for the Job.
 * Profile Detail View: This View is again separate for Profile Owner and Other Users. The Profile Owner views the Preview/Edit View of the profile page, while others have access to notice-like view.
-* Connection: Freelancers and Producers can connect between one another. The Connection request will sent using the connect button on the profile page of the other user. Once request is sending the button is disabled with 'pending' display, and upon acceptance of the request by the receiver, freelancer or producer are added to each others freelancer-connections and producer-connections respectively. (Only the backend is created for now for this one)  
+* Connection: Freelancers and Producers can connect between one another. The Connection request will sent using the connect button on the profile page of the other user. Once request is sending the button is disabled with 'pending' display, and upon acceptance of the request by the receiver, freelancer or producer are added to each others freelancer-connections and producer-connections respectively. (Only the backend is created for now for this one)
+## Video Demonstration
+* Click on the following link to access the video demonstration: [Video Link](https://drive.google.com/drive/u/1/folders/1BHauXEPc24btMv8Qt1ahxvFsouChOQKs)
 ## Frontend
 ### Technologies used
 * [ReactJS](https://react.dev/): React is the library for web and native user interfaces. Build user interfaces out of individual pieces called components written in JavaScript.
@@ -59,8 +61,6 @@ RetrocraftHub is a platform for professional networking and job seeking made wit
     ```bash
         $ node index.js
     ```
-## Video Demonstration
-* Click on the following link to access the video demonstration: [Video Link](https://drive.google.com/drive/u/1/folders/1BHauXEPc24btMv8Qt1ahxvFsouChOQKs)
 ## Challenges Faced
 * Implementation of Protection/Segregation of Routes: Based on Authentication as well as User Roles
 * Integrating Connection Feature in the frontend
