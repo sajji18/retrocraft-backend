@@ -237,11 +237,6 @@ const checkConnected = async (req, res) => {
     }
 };
 
-module.exports = {
-    checkConnected,
-};
-
-
 const removeConnection = async (req, res) => {
 
 }

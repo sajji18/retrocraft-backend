@@ -12,7 +12,7 @@ import {
     getProducerProfileInfo,
     updateProducerProfileInfo
 } from '../controllers/producer/producerControllers'
-import { jwtAuthentication } from '../middlewares/jwtAuth';
+import jwtAuthentication from '../middlewares/jwtAuth';
 
 const router: Router = Router();
 

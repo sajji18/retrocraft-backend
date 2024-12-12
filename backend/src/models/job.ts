@@ -1,4 +1,17 @@
-const mongoose = require('mongoose');
+import mongoose, { Document, Schema, Model } from 'mongoose';
+
+interface IJob extends Document {
+    producer: mongoose.Types.ObjectId;
+    title: string;
+    description: string;
+    requirements: string[];
+    skillsRequired: string[];
+    employmentType:'Full-time' | 'Part-time' | 'Contract' | 'Freelance';
+    location: string;
+    salary: number;
+    postedDate: Date;
+    applicants: mongoose.Schema.Types.ObjectId[];
+}
 
 const jobSchema = new mongoose.Schema({
     producer: { type: mongoose.Schema.Types.ObjectId, ref: 'Producer', required: true },
@@ -13,8 +26,6 @@ const jobSchema = new mongoose.Schema({
     applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Freelancer' }],
 });
 
-const Job = mongoose.model('Job', jobSchema);
+const Job: Model<IJob> = mongoose.model<IJob>('Job', jobSchema);
 
-module.exports = {
-    Job
-}
+export { Job, IJob };

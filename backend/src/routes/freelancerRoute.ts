@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
 import { 
     freelancerLogin, 
     freelancerSignup 
@@ -12,7 +12,7 @@ import {
     getFreelancerProfileInfo,
     updateFreelancerProfileInfo
 } from '../controllers/freelancer/freelancerControllers'
-import { jwtAuthentication } from '../middlewares/jwtAuth';
+import jwtAuthentication from '../middlewares/jwtAuth';
 
 const router: Router = Router();
 

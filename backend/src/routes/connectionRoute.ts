@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import utils from '../utils/connectionControllers';
-import { jwtAuthentication } from '../middlewares/jwtAuth';
+import jwtAuthentication from '../middlewares/jwtAuth';
 
 const router: Router = Router();
 
